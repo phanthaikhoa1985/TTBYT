@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Danh Sách Thiết Bị - NỘI 1</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f8ff; padding: 20px; }
+    h2 { text-align: center; color: #007bff; }
+    .form { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+    input { padding: 8px; border: 1px solid #ccc; border-radius: 6px; }
+    button { padding: 10px 16px; border: none; background: #007bff; color: white; border-radius: 6px; cursor: pointer; margin-right: 8px; }
+    button:hover { background: #0056b3; }
+    table { border-collapse: collapse; width: 100%; background: white; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: center; }
+    th { background: #cce5ff; }
+  </style>
+  <script>
+    if (localStorage.getItem("loggedIn") !== "yes") {
+      window.location.href = "login.html";
+    }
+  </script>
+</head>
+<body>
+  <div style="text-align:left; margin-bottom:10px;"><a href="home.html" style="text-decoration:none;"><button style="background:#28a745;">← Về trang chủ</button></a></div>
+<h2>🩺 DANH SÁCH THIẾT BỊ – NỘI 1</h2>
+
+  <input type="text" id="searchInput" placeholder="🔍 Tìm theo tên hoặc mã thiết bị..." onkeyup="timKiem()" style="width:100%;padding:10px;margin-bottom:15px;border:1px solid #ccc;border-radius:6px;">
+<div class="form">
+    <input id="stt" placeholder="STT" />
+    <input id="ten_ttb" placeholder="Tên TTB" />
+    <input id="ma_ttb" placeholder="Mã TTB" />
+    <input id="serial" placeholder="Serial" />
+    <input id="dvt" placeholder="DVT" />
+    <input id="sl" placeholder="SL" />
+    <input id="tgbh" placeholder="TG-BH" />
+    <input id="tinhtrang" placeholder="Tình trạng" />
+    <input id="giatri" placeholder="Giá trị" />
+    <input id="tb_dikem" placeholder="TB đi kèm" />
+    <input id="suachua" placeholder="Sửa chữa" />
+    <button onclick="themThietBi()">Lưu thiết bị</button>
+    <button onclick="xuatExcel()">Xuất Excel</button>
+    <button onclick="xuatPDF()">Xuất PDF</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>STT</th><th>Tên TTB</th><th>Mã TTB</th><th>Serial</th><th>DVT</th><th>SL</th>
+        <th>TG-BH</th><th>Tình trạng</th><th>Giá trị</th><th>TB đi kèm</th><th>Sửa chữa</th><th>Sửa</th><th>Xoá</th>
+      </tr>
+    </thead>
+    <tbody id="danhsach"></tbody>
+  </table>
+
+  <script>
+    const khoaKey = "noi1";
+    let danhSach = JSON.parse(localStorage.getItem(khoaKey)) || [];
+
+    function renderTable() {
+      const tbody = document.getElementById("danhsach");
+      tbody.innerHTML = "";
+      danhSach.forEach((item, index) => {
+        const row = `<tr>
+          <td>${item.stt}</td>
+          <td>${item.ten_ttb}</td>
+          <td>${item.ma_ttb}</td>
+          <td>${item.serial}</td>
+          <td>${item.dvt}</td>
+          <td>${item.sl}</td>
+          <td>${item.tgbh}</td>
+          <td>${item.tinhtrang}</td>
+          <td>${item.giatri}</td>
+          <td>${item.tb_dikem}</td>
+          <td>${item.suachua}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+        rowEl = tbody.lastElementChild;
+        rowEl.innerHTML += `<td><button onclick="edit(${index})">✏️</button></td>
+                            <td><button onclick="xoa(${index})">🗑</button></td>`;
+      });
+    }
+
+    function themThietBi() {
+      const item = {
+        stt: document.getElementById("stt").value,
+        ten_ttb: document.getElementById("ten_ttb").value,
+        ma_ttb: document.getElementById("ma_ttb").value,
+        serial: document.getElementById("serial").value,
+        dvt: document.getElementById("dvt").value,
+        sl: document.getElementById("sl").value,
+        tgbh: document.getElementById("tgbh").value,
+        tinhtrang: document.getElementById("tinhtrang").value,
+        giatri: document.getElementById("giatri").value,
+        tb_dikem: document.getElementById("tb_dikem").value,
+        suachua: document.getElementById("suachua").value,
+      };
+      danhSach.push(item);
+      localStorage.setItem(khoaKey, JSON.stringify(danhSach));
+      renderTable();
+    }
+
+    function xuatExcel() {
+      const table = document.querySelector("table");
+      const wb = XLSX.utils.table_to_book(table, {sheet:"NOI_1"});
+      XLSX.writeFile(wb, "NOI_1.xlsx");
+    }
+
+    function xuatPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('l', 'pt', 'a4');
+      doc.html(document.querySelector("table"), {
+        callback: function (pdf) {
+          pdf.save("NOI_1.pdf");
+        }
+      });
+    }
+
+    
+function edit(index) {
+  const item = danhSach[index];
+  document.getElementById("stt").value = item.stt;
+  document.getElementById("ten_ttb").value = item.ten_ttb;
+  document.getElementById("ma_ttb").value = item.ma_ttb;
+  document.getElementById("serial").value = item.serial;
+  document.getElementById("dvt").value = item.dvt;
+  document.getElementById("sl").value = item.sl;
+  document.getElementById("tgbh").value = item.tgbh;
+  document.getElementById("tinhtrang").value = item.tinhtrang;
+  document.getElementById("giatri").value = item.giatri;
+  document.getElementById("tb_dikem").value = item.tb_dikem;
+  document.getElementById("suachua").value = item.suachua;
+  danhSach.splice(index, 1);
+  localStorage.setItem(khoaKey, JSON.stringify(danhSach));
+  renderTable();
+}
+
+function xoa(index) {
+  if (confirm("Bạn có chắc muốn xoá thiết bị này không?")) {
+    danhSach.splice(index, 1);
+    localStorage.setItem(khoaKey, JSON.stringify(danhSach));
+    renderTable();
+  }
+}
+
+
+function timKiem() {
+  const keyword = document.getElementById("searchInput").value.toLowerCase();
+  const rows = document.querySelectorAll("#danhsach tr");
+  rows.forEach(row => {
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(keyword) ? "" : "none";
+  });
+}
+
+window.onload = renderTable;
+
+
+  </script>
+</body>
+</html>
