@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng nhập hệ thống TTB Y tế</title>
+  <style>
+    body {
+      background: #ecf0f3;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-container {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 360px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #2c3e50;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .error {
+      color: red;
+      font-size: 0.9em;
+      display: none;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Đăng nhập</h2>
+    <input type="text" id="username" placeholder="Tên đăng nhập" />
+    <input type="password" id="password" placeholder="Mật khẩu" />
+    <div class="error" id="error">Sai tên đăng nhập hoặc mật khẩu!</div>
+    <button onclick="login()">Đăng nhập</button>
+  </div>
+
+  <script>
+    function login() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      const errorBox = document.getElementById("error");
+
+      if (user === "VTTTBYT" && pass === "0620") {
+        window.location.href = "index.html";
+      } else {
+        errorBox.style.display = "block";
+      }
+    }
+  </script>
+</body>
+</html>
